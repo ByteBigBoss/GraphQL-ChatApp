@@ -1,0 +1,38 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserResponse {
+  msg: String!
+  err: String!
+}
+
+type UserEntity {
+  id: String!
+  name: String!
+  email: String!
+  password: String!
+}
+
+type Query {
+  hello: String!
+  user(email: String!): UserEntity!
+  allUsers: [UserEntity!]!
+}
+
+type Mutation {
+  addUser(userRegisterDTO: UserRegisterDTO!): UserResponse!
+  updateUser(updateUserDTO: UserUpdateDTO!): UserResponse!
+}
+
+input UserRegisterDTO {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input UserUpdateDTO {
+  name: String!
+  email: String!
+  password: String!
+}
