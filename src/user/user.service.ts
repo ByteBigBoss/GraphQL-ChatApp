@@ -14,8 +14,7 @@ export class UserService {
     async addUser(dto: UserRegisterDTO): Promise<UserResponse> {
 
         const userResponse: UserResponse = new UserResponse();
-
-
+    
         try {
 
             const user = await this.prisma.user.findUnique({
