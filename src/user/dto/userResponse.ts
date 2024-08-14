@@ -1,4 +1,5 @@
-import { Field, ObjectType } from "@nestjs/graphql";
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { UserEntity } from "../entities/user.entity";
 
 @ObjectType()
 export class UserResponse{
@@ -8,5 +9,11 @@ export class UserResponse{
 
     @Field()
     err: string = "none"
+
+    @Field({nullable:true})
+    user: UserEntity
+
+    @Field(() => Int)
+    status: number
 
 }

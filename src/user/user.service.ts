@@ -14,7 +14,7 @@ export class UserService {
     async addUser(dto: UserRegisterDTO): Promise<UserResponse> {
 
         const userResponse: UserResponse = new UserResponse();
-    
+
         try {
 
             const user = await this.prisma.user.findUnique({
@@ -23,16 +23,18 @@ export class UserService {
                 }
             })
 
-            if (user) userResponse.msg = "Already user registered.";
+            if (user) {
+                userResponse.msg = "Already user registered.";
+                userResponse.status = 409;
+            }
 
         } catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
-                if (error.code === 'P2002') {
-                    userResponse.err = 'User already exists';
 
-                    return userResponse
-                }
-                userResponse.msg = userResponse.err;
+                userResponse.err = 'User already exists';
+                userResponse.status = 500;
+                return userResponse
+
             }
         }
 
@@ -47,7 +49,7 @@ export class UserService {
             })
 
             userResponse.msg = newUser.email
-
+            userResponse.status = 200;
             return userResponse;
         } catch (error) {
             userResponse.err = error;
@@ -58,7 +60,7 @@ export class UserService {
     }
 
 
-    async updateUser(dto: UserUpdateDTO): Promise<UserResponse>{
+    async updateUser(dto: UserUpdateDTO): Promise<UserResponse> {
 
         const userResponse: UserResponse = new UserResponse();
 
@@ -67,15 +69,15 @@ export class UserService {
 
 
             const updatedUser = await this.prisma.user.update({
-                data:dto,
-                where:{
+                data: dto,
+                where: {
                     email: dto.email
                 }
             });
 
 
-            userResponse.msg = "User: "+updatedUser.email+" Updated Successfully";
-
+            userResponse.msg = "User: " + updatedUser.email + " Updated Successfully";
+            userResponse.status = 200;
             return userResponse;
 
         } catch (error) {
@@ -87,10 +89,10 @@ export class UserService {
 
     }
 
-    async getUser(email:string){
+    async getUser(email: string) {
 
-        const user:UserEntity =  await this.prisma.user.findFirst({
-            where:{
+        const user: UserEntity = await this.prisma.user.findFirst({
+            where: {
                 email: email
             }
         });
@@ -101,11 +103,43 @@ export class UserService {
 
 
 
-    async getAllUsers(){
+    async getAllUsers() {
 
-        const users:UserEntity[] = await this.prisma.user.findMany();
+        const users: UserEntity[] = await this.prisma.user.findMany();
 
         return users;
+    }
+
+    async login(email: string, password: string) {
+
+        const userResponse: UserResponse = new UserResponse();
+
+        try {
+
+            const user: UserEntity = await this.prisma.user.findFirst({
+                where: {
+                    email: email
+                }
+            });
+
+            if (!user) {
+                userResponse.msg = "User not found!"
+            } else if (user.password !== password) {
+                userResponse.msg = "Wrong Password"
+            } else {
+                userResponse.user = user;
+                userResponse.msg = "Success";
+            }
+
+            userResponse.status = 200;
+            return userResponse;
+        } catch (error) {
+            userResponse.err = error;
+            userResponse.status = 500;
+            return userResponse;
+
+        }
+
     }
 
 }

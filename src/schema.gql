@@ -2,16 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type UserResponse {
-  msg: String!
-  err: String!
-}
-
 type UserEntity {
   id: String!
   name: String!
   email: String!
   password: String!
+}
+
+type UserResponse {
+  msg: String!
+  err: String!
+  user: UserEntity
+  status: Int!
 }
 
 type Query {
@@ -23,6 +25,7 @@ type Query {
 type Mutation {
   addUser(userRegisterDTO: UserRegisterDTO!): UserResponse!
   updateUser(updateUserDTO: UserUpdateDTO!): UserResponse!
+  login(email: String!, password: String!): UserResponse!
 }
 
 input UserRegisterDTO {
