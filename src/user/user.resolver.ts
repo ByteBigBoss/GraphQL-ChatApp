@@ -12,8 +12,6 @@ export class UserResolver {
 
     @Mutation(() => UserResponse)
     async addUser(@Args("userRegisterDTO") userRegisterDTO: UserRegisterDTO): Promise<UserResponse> {
-
-        console.log(userRegisterDTO);
         return this.userService.addUser(userRegisterDTO);
     }
 
